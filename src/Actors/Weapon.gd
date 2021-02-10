@@ -1,27 +1,30 @@
 extends KinematicBody2D
-const SHOOT_DELTA = 4
-var projectile
-# TODO: Move firing logic to player
+const SHOOT_DELTA = .2
+const PROJECTILE =  preload("res://src/Actors/Bullet.tscn")
+
+onready var timer = get_node("Timer")
+
 func _physics_process(delta: float) -> void:
 	var direction = get_global_mouse_position()
-	var bullet = load("res://src/Actors/Bullet.tscn")
-	if(Input.get_action_strength("shoot")):
-		shoot(direction)
-		print("SHOOT")
 	look_at(direction)
+	if(Input.get_action_strength("shoot") && timer.get_time_left() == 0):
+		shoot()
+		restart_timer()
 
-func _ready():
-	set_process(true)
-	projectile =  load("res://src/Actors/Bullet.tscn")
 
-
-func shoot(direction: Vector2) -> void:
-	#spawn a projectile
-	var bullet = projectile.instance()
-	bullet.init(direction)
-	#.init(direction)
-	#add_child(bullet)
+func shoot() -> void:
+	var bullet = PROJECTILE.instance()
 	var testLevel = get_tree().get_root().get_node("TestLevel")
-	print(testLevel)
+	var bulletDirection = (get_node("MeasurementPosition").get_global_position() - get_node("GunPosition").get_global_position()).normalized()
 	testLevel.add_child(bullet)
-	#add_child_below_node(get_tree().get_root().get_node("TestLevel"),bullet)
+	bullet.set_position(get_node("GunPosition").get_global_position())
+	bullet.init(bulletDirection)
+
+
+func restart_timer():
+	timer.set_wait_time(SHOOT_DELTA)
+	timer.set_one_shot(true)
+	timer.start()
+
+func _on_Timer_timeout() -> void:
+	timer.set_one_shot(false)

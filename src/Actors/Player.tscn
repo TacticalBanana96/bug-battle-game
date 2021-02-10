@@ -1,23 +1,86 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=18 format=2]
 
-[ext_resource path="res://assets/sp_player_2.png" type="Texture" id=1]
+[ext_resource path="res://assets/Animations/IdleUp.tres" type="Animation" id=1]
 [ext_resource path="res://src/Actors/Player.gd" type="Script" id=2]
+[ext_resource path="res://assets/Animations/RunDown.tres" type="Animation" id=3]
+[ext_resource path="res://assets/Animations/IdleDown.tres" type="Animation" id=4]
+[ext_resource path="res://assets/Animations/RunUp.tres" type="Animation" id=5]
 
-[sub_resource type="CapsuleShape2D" id=1]
+[sub_resource type="StreamTexture" id=1]
+load_path = "res://.import/sp_player_animation.png-eb01b76cf9a21c5aca41ff093a0ad0e8.stex"
+
+[sub_resource type="CapsuleShape2D" id=2]
 radius = 4.0
 height = 4.0
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "IdleDown"
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "IdleUp"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id=5]
+blend_point_0/node = SubResource( 3 )
+blend_point_0/pos = Vector2( 0, 1 )
+blend_point_1/node = SubResource( 4 )
+blend_point_1/pos = Vector2( 0, -1 )
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "RunUp"
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "RunDown"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id=8]
+blend_point_0/node = SubResource( 6 )
+blend_point_0/pos = Vector2( 0, -1 )
+blend_point_1/node = SubResource( 7 )
+blend_point_1/pos = Vector2( 0, 1.1 )
+max_space = Vector2( 1, 1.1 )
+blend_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=11]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=12]
+
+[sub_resource type="AnimationNodeStateMachine" id=9]
+states/Idle/node = SubResource( 5 )
+states/Idle/position = Vector2( 361, 76 )
+states/Run/node = SubResource( 8 )
+states/Run/position = Vector2( 539, 88 )
+transitions = [ "Idle", "Run", SubResource( 11 ), "Run", "Idle", SubResource( 12 ) ]
+start_node = "Idle"
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=10]
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 2 )
 
 [node name="sp_player_1" type="Sprite" parent="."]
 position = Vector2( 0, -17 )
-texture = ExtResource( 1 )
+texture = SubResource( 1 )
+hframes = 10
+frame = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -5 )
 rotation = -1.5708
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/IdleDown = ExtResource( 4 )
+anims/IdleUp = ExtResource( 1 )
+anims/RunDown = ExtResource( 3 )
+anims/RunUp = ExtResource( 5 )
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource( 9 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource( 10 )
+parameters/Idle/blend_position = Vector2( 0, 0 )
+parameters/Run/blend_position = Vector2( 0, 0 )

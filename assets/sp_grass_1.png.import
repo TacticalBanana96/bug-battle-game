@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/sp_weapon_1.png-01dbecabe1fcdf2985f80ea7c20b8e8c.stex"
+path="res://.import/sp_grass_1.png-13020a31b189b6cb4c8bbd25f89cb643.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sp_weapon_1.png"
-dest_files=[ "res://.import/sp_weapon_1.png-01dbecabe1fcdf2985f80ea7c20b8e8c.stex" ]
+source_file="res://assets/sp_grass_1.png"
+dest_files=[ "res://.import/sp_grass_1.png-13020a31b189b6cb4c8bbd25f89cb643.stex" ]
 
 [params]
 
